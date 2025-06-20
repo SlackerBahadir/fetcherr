@@ -44,7 +44,7 @@ python main.py --creator "SlackerBahadir" --info
 Try using a VPN or [zapret](https://github.com/bol-van/zapret).
 ## 🗂 Project Structure
 
-```css
+```text
 fetcherr/
 ├── fetcherr/ # Fetcher related utilities and core functions
 │   ├── download_posts.py
