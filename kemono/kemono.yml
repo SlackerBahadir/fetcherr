@@ -7,4 +7,4 @@ kemono:
     n4: "https://n4.kemono.su/data"
   requests:
     creators: "/v1/creators.txt" # It needs to be translated into JSON.
-    creators_posts: "/v1/{service}/user/{creator_id}"
+    creators_posts: "/v1/{service}/user/{creator_id}?o={number}"

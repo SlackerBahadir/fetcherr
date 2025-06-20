@@ -18,7 +18,7 @@ __version__ = "0.1.0"
 @click.option('--number', '-n', help="Number of post that will fetched. Use with only '--getposts'.", type=int)
 @click.option('--service', help="Selecting creators service.")
 @click.option('--path', '-p', help="Selects path for downloading images.")
-def parser(info, refresh, getposts, creator, install, number, service, path):
+def parser(info, refresh, getposts, creator, install, service, path, number):
     creators_file_path = os.path.join(__file__, "kemono", "creators.json")
 
     if refresh:

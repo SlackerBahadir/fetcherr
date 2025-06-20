@@ -8,21 +8,28 @@ from kemono.utils.creator_info import get_info_of_creator
 
 KEMONO = load()
 
+
 def get_posts(creator_id_or_name: str, service: str = None, number: int = None):
+    if number and number % 50 == 0:
+        click.echo("You must write an offset in multiples of 50.")
+
     creator_infos = get_info_of_creator(creator_id_or_name)
 
     if len(creator_infos) == 0:
         click.echo("Creator not found.")
         sys.exit(1)
 
-    if service:
+    if service is not None:
         full_url = (KEMONO["kemono"]["url"] + KEMONO["kemono"]["requests"]["creators_posts"]
                     .replace("{service}", service)
-                    .replace("{creator_id}", creator_infos["id"]))
+                    .replace("{creator_id}", creator_infos["id"])
+                    .replace("{number}", number))
     else:
         full_url = (KEMONO["kemono"]["url"] + KEMONO["kemono"]["requests"]["creators_posts"]
                     .replace("{service}", creator_infos[0]["service"])
-                    .replace("{creator_id}", creator_infos[0]["id"]))
+                    .replace("{creator_id}", creator_infos[0]["id"])
+                    .replace("{number}", str(number)))
+        
     try:
         response = requests.get(full_url)
     except requests.exceptions.SSLError:
@@ -39,6 +46,8 @@ def get_posts(creator_id_or_name: str, service: str = None, number: int = None):
         if number is not None:
             return data[:number]
         return data
+
+    click.echo(response.status_code)
 
     return None
 
