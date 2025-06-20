@@ -1,0 +1,5 @@
+kemono:
+  url: "https://kemono.su/api"
+  requests:
+    creators: "/v1/creators.txt" # It needs to be translated into JSON.
+    creators_posts: "/v1/{service}/user/{creator_id}"
