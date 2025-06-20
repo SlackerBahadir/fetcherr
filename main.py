@@ -1,26 +1,30 @@
 import click
 import sys
-from kemono.utils.creator_info import download_creator_info_file, print_formatted
-from kemono.utils.get_posts_of_creator_by_name_or_id import get_posts
+from kemono.utils.creator_info import download_creator_info_file, print_formatted_info
+from kemono.utils.get_posts_of_creator_by_name_or_id import print_formatted_post
+
+__version__ = "0.1.0"
 
 @click.command(help="Fetcherr: Kemono scraper CLI")
+@click.version_option(__version__, prog_name="fetcherr")
 @click.option('--info', is_flag=True, help="Get detailed info of a creator.")
 @click.option('--refresh', is_flag=True, help="Refresh creators.json file.")
-@click.option('--getposts', '-g', help="Get posts from the selected creator.")
-@click.option('--creator', help="Set creator name or ID to be used with --info or --installall.")
-@click.option('--installall', is_flag=True, help="Download all posts of selected creator.")
-def parser(info, refresh, getposts, creator, installall):
+@click.option('--getposts', is_flag=True, help="Get posts from the selected creator. Mostly meaningless when not used with '--installall'. Defaultly fetches every post.")
+@click.option('--creator', '-c', help="Set creator with specifying name or ID of creator to be used with '--info', '--installall' and '--getallposts'.")
+@click.option('--installall', is_flag=True, help="Download all posts of selected creator's posts.")
+@click.option('--number', help="Number of post that will fetched. Use with only '--getposts'.", type=int)
+def parser(info, refresh, getposts, creator, installall, number, c = None):
     if refresh:
         download_creator_info_file()
 
     if info:
-        print_formatted(creator)
+        print_formatted_info(creator)
 
     if getposts:
-        get_posts() # TODO
+        print_formatted_post(creator, number=number)
 
-    if installall:
-        click.echo("Install-all is not implemented yet.")  # TODO
+    if getposts and installall:
+        pass
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:

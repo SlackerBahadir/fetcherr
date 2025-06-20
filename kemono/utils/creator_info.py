@@ -1,5 +1,4 @@
 import sys
-
 import click
 import ftfy
 from pathlib import Path
@@ -34,7 +33,7 @@ def download_creator_info_file():
             json.dump(data, f, indent=4, ensure_ascii=False)
 
 
-def get_info_of_creator(creator_name_or_id):
+def get_info_of_creator(creator_name_or_id: str):
     creator_name_or_id = creator_name_or_id.replace('_', ' ')
 
     creators_file_path = Path(__file__).parent.parent / "creators.json"
@@ -42,19 +41,26 @@ def get_info_of_creator(creator_name_or_id):
     with open(creators_file_path, 'r') as f:
         creators = json.load(f)
 
+    founded_creators = []
+
     for creator in creators:
         if creator.get("name") == creator_name_or_id or creator.get("id") == creator_name_or_id:
 
-            return creator
+            founded_creators.append(creator)
 
-    return None
+    return founded_creators
 
 
-def print_formatted(name_or_id):
-    creator = get_info_of_creator(name_or_id)
+def print_formatted_info(name_or_id: str):
+    creators = get_info_of_creator(name_or_id)
 
-    if creator:
-        for key, value in creator.items():
-            click.echo(f"{key.capitalize()}: {value}")
-    else:
+    if len(creators) == 0:
         click.echo("Creator not found.")
+        sys.exit(1)
+
+    for creator in creators:
+        if creator:
+            click.echo("-------------------------------------------/")
+            for key, value in creator.items():
+                click.echo(f"{key.capitalize()}: {value}")
+            click.echo("-------------------------------------------\\")

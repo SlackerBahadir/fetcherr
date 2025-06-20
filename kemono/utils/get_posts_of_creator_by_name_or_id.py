@@ -1,19 +1,28 @@
 import sys
 import click
 import requests
+import html2text
 
 from fetcherr.kemono_yaml_loader import load
 from kemono.utils.creator_info import get_info_of_creator
 
 KEMONO = load()
 
-def get_posts(creator_id):
-    creator_infos = get_info_of_creator(creator_id)
+def get_posts(creator_id_or_name: str, service: str = None, number: int = None):
+    creator_infos = get_info_of_creator(creator_id_or_name)
 
-    full_url = (KEMONO["kemono"]["url"] + KEMONO["kemono"]["requests"]["creators_posts"]
-                .replace("{service}", creator_infos["service"])
-                .replace("{creator_id}", creator_infos["id"]))
+    if len(creator_infos) == 0:
+        print("Creator not found.")
+        sys.exit(1)
 
+    if service:
+        full_url = (KEMONO["kemono"]["url"] + KEMONO["kemono"]["requests"]["creators_posts"]
+                    .replace("{service}", service)
+                    .replace("{creator_id}", creator_infos["id"]))
+    else:
+        full_url = (KEMONO["kemono"]["url"] + KEMONO["kemono"]["requests"]["creators_posts"]
+                    .replace("{service}", creator_infos[0]["service"])
+                    .replace("{creator_id}", creator_infos[0]["id"]))
     try:
         response = requests.get(full_url)
     except requests.exceptions.SSLError:
@@ -27,4 +36,28 @@ def get_posts(creator_id):
     if response.status_code == 200:
         data = response.json()
 
-        # COMPLETE THIS
+        if number is not None:
+            return data[:number]
+        return data
+
+    return None
+
+
+def print_formatted_post(creator_id_or_name: str, service: str = None, number: int = None):
+    posts = get_posts(creator_id_or_name, service, number)
+
+    if len(posts) == 0 or posts:
+        click.echo("Creator has no posts.")
+
+    for post in posts:
+        content = html2text.html2text(post.get('content'))
+        click.echo("-------------------------------------------/")
+        click.echo(
+            f"Id: {post.get('id')}\n"
+            f"Creator Id: {post.get('user')}\n"
+            f"Service: {post.get('service')}\n"
+            f"Title of Post: {post.get('title')}\n"
+            f"Description: {content}"
+            f"Attachments: {post.get('attachments')}"
+        )
+        click.echo("-------------------------------------------\\")
