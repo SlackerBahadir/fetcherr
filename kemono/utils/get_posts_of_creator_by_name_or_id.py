@@ -1,7 +1,7 @@
 import sys
 import click
 import requests
-import html2text
+import html2text as h2t
 
 from fetcherr.kemono_yaml_loader import load
 from kemono.utils.creator_info import get_info_of_creator
@@ -12,7 +12,7 @@ def get_posts(creator_id_or_name: str, service: str = None, number: int = None):
     creator_infos = get_info_of_creator(creator_id_or_name)
 
     if len(creator_infos) == 0:
-        print("Creator not found.")
+        click.echo("Creator not found.")
         sys.exit(1)
 
     if service:
@@ -50,7 +50,7 @@ def print_formatted_post(creator_id_or_name: str, service: str = None, number: i
         click.echo("Creator has no posts.")
 
     for post in posts:
-        content = html2text.html2text(post.get('content'))
+        content = h2t.html2text(post.get('content'))
         click.echo("-------------------------------------------/")
         click.echo(
             f"Id: {post.get('id')}\n"

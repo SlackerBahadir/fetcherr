@@ -1,5 +1,10 @@
 kemono:
   url: "https://kemono.su/api"
+  image_urls:
+    n1: "https://n1.kemono.su/data"
+    n2: "https://n2.kemono.su/data"
+    n3: "https://n3.kemono.su/data"
+    n4: "https://n4.kemono.su/data"
   requests:
     creators: "/v1/creators.txt" # It needs to be translated into JSON.
     creators_posts: "/v1/{service}/user/{creator_id}"
