@@ -8,3 +8,5 @@ kemono:
   requests:
     creators: "/v1/creators.txt" # It needs to be translated into JSON.
     creators_posts: "/v1/{service}/user/{creator_id}?o={number}"
+    random_post: "/v1/posts/random"
+    popular_posts: "/v1/posts/popular"

@@ -6,6 +6,7 @@ import requests
 import json
 
 from fetcherr.kemono_yaml_loader import load
+from fetcherr.printf_info import print_formatted_info
 
 KEMONO = load()
 
@@ -33,7 +34,7 @@ def download_creator_info_file():
             json.dump(data, f, indent=4, ensure_ascii=False)
 
 
-def get_info_of_creator(creator_name_or_id: str):
+def get_info_of_creator(creator_name_or_id: str, printf: bool = False):
     creator_name_or_id = creator_name_or_id.replace('_', ' ')
 
     creators_file_path = Path(__file__).parent.parent / "creators.json"
@@ -48,19 +49,8 @@ def get_info_of_creator(creator_name_or_id: str):
 
             founded_creators.append(creator)
 
+    if printf:
+        print_formatted_info(founded_creators)
+        sys.exit(0)
+
     return founded_creators
-
-
-def print_formatted_info(name_or_id: str):
-    creators = get_info_of_creator(name_or_id)
-
-    if len(creators) == 0:
-        click.echo("Creator not found.")
-        sys.exit(1)
-
-    for creator in creators:
-        if creator:
-            click.echo("-------------------------------------------/")
-            for key, value in creator.items():
-                click.echo(f"{key.capitalize()}: {value}")
-            click.echo("-------------------------------------------\\")
